@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { deleteData, fetchData } from '../services/firebaseService';
+import { deleteData, fetchData, updateData} from '../services/firebaseService';
 
 export default function DataList() {
   // State to hold fetched data items
@@ -22,7 +22,8 @@ export default function DataList() {
   };
 
   // Function to toggle the 'completed' status of an item
-  const toggleComplete = (id) => {
+  const toggleComplete = async (id, currentStatus) => {
+    try {
     setData(
       data.map((item) =>
         item.id === id 
@@ -30,6 +31,11 @@ export default function DataList() {
           : item                                   // Leave other items unchanged
       )
     );
+    await updateData(id, {completed: !currentStatus});
+    console.log("Completion status updated in firebase")
+} catch (error) {
+    console.error("error toggling completion status", error);
+}
   };
 
   return (
@@ -38,7 +44,7 @@ export default function DataList() {
       {data.map((item) => (
         <li
           key={item.id} // Unique key for React rendering optimization
-          onClick={() => toggleComplete(item.id)} // Toggle completion on list item click
+          onClick={() => toggleComplete(item.id, item.completed)} // Toggle completion on list item click
           style={{
             // Apply strikethrough style if the item is marked as completed
             textDecoration: item.completed ? "line-through" : "none",
