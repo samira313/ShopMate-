@@ -31,6 +31,7 @@ export default function DataList() {
           : item                                   // Leave other items unchanged
       )
     );
+    // Toggle the 'completed' status of a specific task by inverting its current value (true ⇄ false)
     await updateData(id, {completed: !currentStatus});
     console.log("Completion status updated in firebase")
 } catch (error) {
