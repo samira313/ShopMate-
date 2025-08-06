@@ -1,67 +1,59 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { login } from "../services/authService";
+import "../styles/FormStyles.css"; // Import shared styles
 
-function LoginForm() {
-  // States for form inputs, error, and success messages
+const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
-  // Handle login form submission
+  // Handle form submission
   const handleLogin = async (e) => {
-    e.preventDefault(); // Prevent page reload
-
-    // Reset previous error/message
+    e.preventDefault();
     setError("");
     setMessage("");
-
     try {
       await login(email, password);
-      setMessage("✅ Login successful! Welcome back.");
-      setEmail("");
-      setPassword("");
+      setMessage("✅ Login successful! Redirecting...");
+      setTimeout(() => navigate("/"), 1500);
     } catch (err) {
-      setError("❌ Login failed: " + err.message);
+      setError("❌ Login failed. Please check your credentials.", err);
     }
   };
 
   return (
-    <div>
+    <div className="form-container">
       <h2>Login</h2>
-      {/* Display success message */}
-      {message && <p style={{ color: "green" }}>{message}</p>}
-      {/* Display error message */}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <div className="alert alert-error">{error}</div>}
+      {message && <div className="alert alert-success">{message}</div>}
+      <form onSubmit={handleLogin} className="form-box">
+        <label>Email</label>
+        <input
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          autoComplete="email"
+          required
+        />
 
-      {/* Login form */}
-      <form onSubmit={handleLogin}>
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            autoComplete="email"
-            required
-          />
-        </div>
+        <label>Password</label>
+        <input
+          type="password"
+          placeholder="Enter your password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          autoComplete="current-password"
+          required
+        />
 
-        <div>
-          <label>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="password"
-            required
-          />
-        </div>
-
-        <button type="submit">Login</button>
+        <button type="submit" className="btn-primary">Login</button>
       </form>
     </div>
   );
-}
+};
 
 export default LoginForm;
