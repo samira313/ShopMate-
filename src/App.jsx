@@ -1,11 +1,14 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthProvider";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
 import ShoppingListPage from "./pages/ShoppingListPage";
+import { useAuth } from "./hooks/UseAuth";
 
 function App() {
+   const { currentUser } = useAuth() || {};
   return (
     <AuthProvider>
       <Router>
@@ -22,6 +25,12 @@ function App() {
               </ProtectedRoute>
             }
           />
+                  {/* Redirect to shopping list if logged in, else to login */}
+        <Route
+          path="/"
+          element={currentUser ? <Navigate to="/shopping-list" /> : <Navigate to="/login" />}
+        />
+      
         </Routes>
       </Router>
     </AuthProvider>

@@ -3,10 +3,14 @@ import { useAuth } from "../hooks/UseAuth";
 
 // This component checks if the user is logged in before rendering the page
 const ProtectedRoute = ({ children }) => {
-  const { user } = useAuth();
+  const { currentUser, loading } = useAuth();
+
+  if(loading) {
+    return <p>Loading...</p>
+  }
 
   // If no user → redirect to login
-  if (!user) {
+  if (!currentUser) {
     return <Navigate to="/login" replace />;
   }
 
