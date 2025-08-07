@@ -18,7 +18,7 @@ const LoginForm = () => {
     try {
       await login(email, password);
       setMessage("✅ Login successful! Redirecting...");
-      setTimeout(() => navigate("/"), 1500);
+      setTimeout(() => navigate("/shopping-list"), 1500);
     } catch (err) {
       setError("❌ Login failed. Please check your credentials.", err);
     }
