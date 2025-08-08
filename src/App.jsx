@@ -6,12 +6,13 @@ import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
 import ShoppingListPage from "./pages/ShoppingListPage";
 import { useAuth } from "./hooks/UseAuth";
-
+import Navbar from "./components/Navbar"; 
 function App() {
    const { currentUser } = useAuth() || {};
   return (
     <AuthProvider>
       <Router>
+        <Navbar />
         <Routes>
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
