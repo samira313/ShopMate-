@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { addItem, getItems, updateItem, deleteItem } from "../services/shoppingService";
 import { useAuth } from "../hooks/UseAuth"; //  Assuming you have an AuthContext
 
@@ -7,18 +7,19 @@ function ShoppingListPage() {
   const [items, setItems] = useState([]);
   const [newItem, setNewItem] = useState("");
 
-  //  Fetch items from Firestore when the component mounts
+ 
+      // Function to load items
+  const fetchItems = useCallback(async () => {
+    const data = await getItems(currentUser.uid);
+    setItems(data);
+  }, [currentUser])
+
+ //  Fetch items from Firestore when the component mounts
   useEffect(() => {
     if (currentUser) {
       fetchItems();
     }
-  }, [currentUser]);
-
-  // Function to load items
-  const fetchItems = async () => {
-    const data = await getItems(currentUser.uid);
-    setItems(data);
-  };
+  },[currentUser, fetchItems]);
 
   //  Add new item
   const handleAddItem = async (e) => {
