@@ -7,6 +7,7 @@ import LoginPage from "./pages/LoginPage";
 import ShoppingListPage from "./pages/ShoppingListPage";
 import { useAuth } from "./hooks/UseAuth";
 import Navbar from "./components/Navbar"; 
+import ProfilePage from "./pages/ProfilePage";
 function App() {
    const { currentUser } = useAuth() || {};
   return (
@@ -31,7 +32,15 @@ function App() {
           path="/"
           element={currentUser ? <Navigate to="/shopping-list" /> : <Navigate to="/login" />}
         />
-      
+      <Route 
+      path="/profile"
+      element={
+      <ProtectedRoute>
+        <ProfilePage />
+
+      </ProtectedRoute>
+      } 
+      />
         </Routes>
       </Router>
     </AuthProvider>

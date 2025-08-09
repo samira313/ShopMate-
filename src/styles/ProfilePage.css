@@ -1,0 +1,18 @@
+.profile-container {
+    max-width: 500px;
+    margin: 30px, auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+
+}
+
+.profile-container h2 {
+    margin-bottom: 15px;
+}
+
+.profile-container p {
+    font-size: 16px;
+    margin: 5px 0;
+}
