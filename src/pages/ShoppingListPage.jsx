@@ -1,17 +1,25 @@
 import { useState, useEffect, useCallback } from "react";
 import { addItem, getItems, updateItem, deleteItem } from "../services/shoppingService";
 import { useAuth } from "../hooks/UseAuth"; //  Assuming you have an AuthContext
+import Spinner from "../components/Spinner";
 
 function ShoppingListPage() {
   const { currentUser } = useAuth(); // Get logged-in user's info
   const [items, setItems] = useState([]);
   const [newItem, setNewItem] = useState("");
+  const [loading, setLoading] = useState(true);
 
  
       // Function to load items
   const fetchItems = useCallback(async () => {
+    if (!currentUser) {
+    setLoading(false);
+    return;
+    }
+    setLoading(true);
     const data = await getItems(currentUser.uid);
     setItems(data);
+    setLoading(false);
   }, [currentUser])
 
  //  Fetch items from Firestore when the component mounts
@@ -42,10 +50,25 @@ function ShoppingListPage() {
     await deleteItem(id);
     fetchItems();
   };
+  if (loading) {
+   return <Spinner />;
+
+}
+
 
   return (
     <div className="shopping-container">
-      <h2>🛒 My Shopping List</h2>
+      {loading ? (
+        <Spinner /> 
+      ) : (
+        <>
+            <h2>🛒 My Shopping List</h2>
+        </>
+      )
+      
+    }
+       
+  
 
       {/* Add new item form */}
       <form onSubmit={handleAddItem}>
