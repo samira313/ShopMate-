@@ -10,8 +10,7 @@ function ShoppingListPage() {
   const [newItem, setNewItem] = useState("");
   const [loading, setLoading] = useState(true);
 
- 
-      // Function to load items
+   // Function to load items
   const fetchItems = useCallback(async () => {
     if (!currentUser) {
     setLoading(false);
@@ -55,8 +54,10 @@ function ShoppingListPage() {
    return <Spinner />;
 
 }
-
-
+if (!items || items.length === 0) {
+  return <p className="empty-message">Your list is empty</p>
+}
+   
   return (
     <div className="shopping-container">
       {loading ? (
@@ -65,12 +66,8 @@ function ShoppingListPage() {
         <>
             <h2>🛒 My Shopping List</h2>
         </>
-      )
-      
+      )     
     }
-       
-  
-
       {/* Add new item form */}
       <form onSubmit={handleAddItem}>
         <input
@@ -84,6 +81,8 @@ function ShoppingListPage() {
 
       {/* Show list of items */}
       <ul>
+        
+        
         {items.map((item) => (
           <li key={item.id} className={item.completed  ? "completed" : ""}>
             {item.name}
