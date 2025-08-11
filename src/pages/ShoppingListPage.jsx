@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { addItem, getItems, updateItem, deleteItem } from "../services/shoppingService";
 import { useAuth } from "../hooks/UseAuth"; //  Assuming you have an AuthContext
 import Spinner from "../components/Spinner";
+import "../styles/shppingListPage.css"
 
 function ShoppingListPage() {
   const { currentUser } = useAuth(); // Get logged-in user's info
@@ -84,7 +85,7 @@ function ShoppingListPage() {
       {/* Show list of items */}
       <ul>
         {items.map((item) => (
-          <li key={item.id} style={{ textDecoration: item.completed ? "line-through" : "none" }}>
+          <li key={item.id} className={item.completed  ? "completed" : ""}>
             {item.name}
             <button onClick={() => handleToggle(item.id, item.completed)}>✅</button>
             <button onClick={() => handleDelete(item.id)}>❌</button>
