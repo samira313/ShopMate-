@@ -1,6 +1,18 @@
 // Connect to Firestore database
-import { db } from '../firebase-config';
-import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { db, auth } from '../firebase-config';
+import { 
+  collection, 
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+  updateDoc,
+  serverTimestamp, 
+  query, 
+  where, 
+  orderBy 
+    }
+     from 'firebase/firestore';
  // Import Firebase configuration
 
 /**
@@ -9,14 +21,32 @@ import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase
     // Get all data from "test" collection
     // Return data as an array, including document ID
 export const fetchData = async () => {
-  const querySnapshot = await getDocs(collection(db, "shoppingList"));
+  const user = auth.currentUser;
+  if (!user) return [];
+
+  const q = query(
+    collection(db, "shoppingList"),
+    where("userId", "==", user.uid),
+    orderBy("createdAt", "desc")
+
+  );
+  const querySnapshot = await getDocs(q);
   return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 };
 // Add a new document to "shoppingList" collection
 export const addData = async (name) => {
-  if (name.trim() !== "") {
-    await addDoc(collection(db, "shoppingList"), { name });
-  }
+  const user = auth.currentUser; // get current user
+  if (!user) return;
+// if input is empty
+  if (name.trim() !== "") return; 
+  
+    await addDoc(collection(db, "shoppingList"), {
+       name,
+       completed: false,
+       userId: user.uid,
+       createdAt: serverTimestamp(),
+       });
+  
 };
 
 /**

@@ -54,45 +54,45 @@ function ShoppingListPage() {
    return <Spinner />;
 
 }
-if (!items || items.length === 0) {
-  return <p className="empty-message">Your list is empty</p>
-}
-   
-  return (
-    <div className="shopping-container">
-      {loading ? (
-        <Spinner /> 
-      ) : (
-        <>
-            <h2>🛒 My Shopping List</h2>
-        </>
-      )     
-    }
-      {/* Add new item form */}
-      <form onSubmit={handleAddItem}>
-        <input
-          type="text"
-          placeholder="Enter item..."
-          value={newItem}
-          onChange={(e) => setNewItem(e.target.value)}
-        />
-        <button type="submit">Add</button>
-      </form>
 
-      {/* Show list of items */}
-      <ul>
-        
-        
-        {items.map((item) => (
-          <li key={item.id} className={item.completed  ? "completed" : ""}>
-            {item.name}
-            <button onClick={() => handleToggle(item.id, item.completed)}>✅</button>
-            <button onClick={() => handleDelete(item.id)}>❌</button>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+ return (
+  <div className="shopping-container">
+    {loading ? (
+      <Spinner />
+    ) : (
+      <>
+        <h2>🛒 My Shopping List</h2>
+
+        {/* add items form*/}
+        <form onSubmit={handleAddItem}>
+          <input
+            type="text"
+            placeholder="Enter item..."
+            value={newItem}
+            onChange={(e) => setNewItem(e.target.value)}
+          />
+          <button type="submit">Add</button>
+        </form>
+
+        {/* show empty message*/}
+        {items.length === 0 ? (
+          <p className="empty-message">Your list is empty</p>
+        ) : (
+          <ul>
+            {items.map((item) => (
+              <li key={item.id} className={item.completed ? "completed" : ""}>
+                {item.name}
+                <button onClick={() => handleToggle(item.id, item.completed)}>✅</button>
+                <button onClick={() => handleDelete(item.id)}>❌</button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </>
+    )}
+  </div>
+);
+
 }
 
 export default ShoppingListPage;
