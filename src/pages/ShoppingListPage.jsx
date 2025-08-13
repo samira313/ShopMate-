@@ -10,8 +10,7 @@ function ShoppingListPage() {
   const [newItem, setNewItem] = useState("");
   const [loading, setLoading] = useState(true);
 
- 
-      // Function to load items
+   // Function to load items
   const fetchItems = useCallback(async () => {
     if (!currentUser) {
     setLoading(false);
@@ -56,44 +55,44 @@ function ShoppingListPage() {
 
 }
 
+ return (
+  <div className="shopping-container">
+    {loading ? (
+      <Spinner />
+    ) : (
+      <>
+        <h2>🛒 My Shopping List</h2>
 
-  return (
-    <div className="shopping-container">
-      {loading ? (
-        <Spinner /> 
-      ) : (
-        <>
-            <h2>🛒 My Shopping List</h2>
-        </>
-      )
-      
-    }
-       
-  
+        {/* add items form*/}
+        <form onSubmit={handleAddItem}>
+          <input
+            type="text"
+            placeholder="Enter item..."
+            value={newItem}
+            onChange={(e) => setNewItem(e.target.value)}
+          />
+          <button type="submit">Add</button>
+        </form>
 
-      {/* Add new item form */}
-      <form onSubmit={handleAddItem}>
-        <input
-          type="text"
-          placeholder="Enter item..."
-          value={newItem}
-          onChange={(e) => setNewItem(e.target.value)}
-        />
-        <button type="submit">Add</button>
-      </form>
+        {/* show empty message*/}
+        {items.length === 0 ? (
+          <p className="empty-message">Your list is empty</p>
+        ) : (
+          <ul>
+            {items.map((item) => (
+              <li key={item.id} className={item.completed ? "completed" : ""}>
+                {item.name}
+                <button onClick={() => handleToggle(item.id, item.completed)}>✅</button>
+                <button onClick={() => handleDelete(item.id)}>❌</button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </>
+    )}
+  </div>
+);
 
-      {/* Show list of items */}
-      <ul>
-        {items.map((item) => (
-          <li key={item.id} className={item.completed  ? "completed" : ""}>
-            {item.name}
-            <button onClick={() => handleToggle(item.id, item.completed)}>✅</button>
-            <button onClick={() => handleDelete(item.id)}>❌</button>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
 }
 
 export default ShoppingListPage;
