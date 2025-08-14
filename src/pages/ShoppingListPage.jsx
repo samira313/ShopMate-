@@ -9,6 +9,7 @@ function ShoppingListPage() {
   const [items, setItems] = useState([]);
   const [newItem, setNewItem] = useState("");
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState("all");
 
    // Function to load items
   const fetchItems = useCallback(async () => {
@@ -55,6 +56,13 @@ function ShoppingListPage() {
 
 }
 
+const filteredItems = items.filter((item) => {
+    if (filter === "completed") return item.completed;
+    if (filter === "pending") return !item.completed;
+    return true;
+  })
+
+
  return (
   <div className="shopping-container">
     {loading ? (
@@ -62,6 +70,12 @@ function ShoppingListPage() {
     ) : (
       <>
         <h2>🛒 My Shopping List</h2>
+         <div className="filtered">
+          <button onClick={() => setFilter("all")}>All</button>
+          <button onClick={() => setFilter("completed")}>completed</button>
+          <button onClick={() => setFilter("pending")}>pending</button>
+
+         </div>
 
         {/* add items form*/}
         <form onSubmit={handleAddItem}>
@@ -79,7 +93,7 @@ function ShoppingListPage() {
           <p className="empty-message">Your list is empty</p>
         ) : (
           <ul>
-            {items.map((item) => (
+            {filteredItems.map((item) => (
               <li key={item.id} className={item.completed ? "completed" : ""}>
                 {item.name}
                 <button onClick={() => handleToggle(item.id, item.completed)}>✅</button>
