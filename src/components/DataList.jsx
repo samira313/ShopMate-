@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { deleteData, fetchData, updateData} from '../services/firebaseService';
+import { toast } from 'react-toastify';
 
 export default function DataList() {
   // State to hold fetched data items
@@ -33,9 +34,9 @@ export default function DataList() {
     );
     // Toggle the 'completed' status of a specific task by inverting its current value (true ⇄ false)
     await updateData(id, {completed: !currentStatus});
-    console.log("Completion status updated in firebase")
+   toast.success("Completion status updated in firebase")
 } catch (error) {
-    console.error("error toggling completion status", error);
+   toast.error("error toggling completion status", error);
 }
   };
 
