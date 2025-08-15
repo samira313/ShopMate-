@@ -8,6 +8,8 @@ import ShoppingListPage from "./pages/ShoppingListPage";
 import { useAuth } from "./hooks/UseAuth";
 import Navbar from "./components/Navbar"; 
 import ProfilePage from "./pages/ProfilePage";
+import { ToastContainer } from "react-toastify";
+// import 'react-toastify/'
 function App() {
    const { currentUser } = useAuth() || {};
   return (
@@ -43,6 +45,7 @@ function App() {
       />
         </Routes>
       </Router>
+       <ToastContainer position="top-right" autoClose={3000} />
     </AuthProvider>
   );
 }

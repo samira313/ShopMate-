@@ -3,6 +3,7 @@ import { addItem, getItems, updateItem, deleteItem } from "../services/shoppingS
 import { useAuth } from "../hooks/UseAuth"; //  Assuming you have an AuthContext
 import Spinner from "../components/Spinner";
 import "../styles/shppingListPage.css"
+import { toast } from "react-toastify";
 
 function ShoppingListPage() {
   const { currentUser } = useAuth(); // Get logged-in user's info
@@ -33,7 +34,10 @@ function ShoppingListPage() {
   //  Add new item
   const handleAddItem = async (e) => {
     e.preventDefault();
-    if (newItem.trim() === "") return;
+    if (!newItem.trim() || newItem.length === 0) {
+         toast.error("Please enter an item name");
+          return;   
+    }
 
     await addItem(currentUser.uid, newItem);
     setNewItem("");

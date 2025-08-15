@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/authService";
 import "../styles/FormStyles.css"; // Import shared styles
+import { toast } from "react-toastify";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -17,10 +18,10 @@ const LoginForm = () => {
     setMessage("");
     try {
       await login(email, password);
-      setMessage("✅ Login successful! Redirecting...");
+      toast.success("✅ Login successful! Redirecting...");
       setTimeout(() => navigate("/shopping-list"), 1500);
     } catch (err) {
-      setError("❌ Login failed. Please check your credentials.", err);
+      toast.error("❌ Login failed. Please check your password or email", err);
     }
   };
 

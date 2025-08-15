@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signup  } from "../services/authService";
 import "../styles/FormStyles.css"; // Import shared styles
+import { toast } from "react-toastify";
 
 const SignupForm = () => {
   const [email, setEmail] = useState("");
@@ -12,14 +13,19 @@ const SignupForm = () => {
 
   const handleSignup = async (e) => {
     e.preventDefault();
+
+    if (password.length < 6){
+      toast.error("Password must be at least 6 characters long");
+      return;
+    }
     setMessage("");
     setError("");
     try {
       await signup(email, password);
-      setMessage("🎉 Account created successfully! Redirecting...");
+     toast.success("🎉 Account created successfully! Redirecting...");
       setTimeout(() => navigate("/login"), 1500);
     } catch (err) {
-      setError("⚠️ Signup failed. Try again with a different email.", err);
+      toast.error("⚠️ Signup failed. Try again with a different email.", err);
     }
   };
 
