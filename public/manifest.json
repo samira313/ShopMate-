@@ -1,10 +1,13 @@
+
 {
   "name": "Shopping List",
   "short_name": "ShopList",
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#2196f3",
+  "orientation": "portrait",
+
   "icons": [
     {
       "src": "/favicon_io/android-chrome-192x192.png",
@@ -15,6 +18,21 @@
       "src": "/favicon_io/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
+    }
+  ],
+
+  "screenshots": [
+    {
+      "src": "/screenshot1.png",
+      "sizes": "738x1854",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/screenshot2.png",
+      "sizes": "1410x762",
+      "type": "image/png",
+      "form_factor": "wide"
     }
   ]
 }
