@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect, useCallback } from "react";
 import { addItem, getItems, updateItem, deleteItem } from "../services/shoppingService";
 import { useAuth } from "../hooks/UseAuth"; //  Assuming you have an AuthContext
