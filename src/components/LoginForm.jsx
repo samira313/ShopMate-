@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { login } from "../services/authService";
 import "../styles/FormStyles.css"; // Import shared styles
 import { toast } from "react-toastify";
+import SignupForm from "./SignupForm";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -53,6 +54,9 @@ const LoginForm = () => {
 
         <button type="submit" className="btn-primary">Login</button>
       </form>
+      <p>
+        Don't have an account? <a href="/signup">Sign Up</a>
+      </p>
     </div>
   );
 };
