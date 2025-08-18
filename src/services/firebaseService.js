@@ -1,9 +1,10 @@
 // Connect to Firestore database
-import { db, auth } from '../firebase-config';
+ // Import Firebase config and Firestore functions
+import { db } from '../firebase-config';
 import { 
   collection, 
   addDoc,
-  getDocs,
+  onSnapshot,
   deleteDoc,
   doc,
   updateDoc,
@@ -13,64 +14,75 @@ import {
   orderBy 
     }
      from 'firebase/firestore';
- // Import Firebase configuration
+
 
 /**
- * This function gets all documents from the "test" collection
+ * Subscribe to items in Firestore in real-time
+ * @param {string} userId - Current user's UID
+ * @param {function} callback - Function to run when data changes
+ * @returns {function} unsubscribe function
  */
-    // Get all data from "test" collection
-    // Return data as an array, including document ID
-export const fetchData = async () => {
-  const user = auth.currentUser;
-  if (!user) return [];
-
+export const subscribeToItems = (userId, callback) => {
+  // Build query for user's shopping list
   const q = query(
     collection(db, "shoppingList"),
-    where("userId", "==", user.uid),
+    where("userId", "==", userId),
     orderBy("createdAt", "desc")
-
   );
-  const querySnapshot = await getDocs(q);
-  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-};
-// Add a new document to "shoppingList" collection
-export const addData = async (name) => {
-  const user = auth.currentUser; // get current user
-  if (!user) return;
 
-  if (!name.trim()) return; 
-  
-    await addDoc(collection(db, "shoppingList"), {
-       name,
-       completed: false,
-       userId: user.uid,
-       createdAt: serverTimestamp(),
-       });
-  
+  // Listen to Firestore changes in real-time
+  const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const items = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    callback(items); // Send data back to component
+  });
+
+  return unsubscribe; // Component can stop listening when unmounted
 };
 
 /**
- * This function deletes a document from the "shoppingList" collection
+ * Add a new item to Firestore
+ * @param {string} userId - Current user's UID
+ * @param {string} name - Item name
  */
-    // Find the document by ID
-    // Delete the document
-export const deleteData = async (id) => {
-  await deleteDoc(doc(db, "shoppingList", id));
+export const addItem = async (userId, name) => {
+  if (!userId) return;
+  if (!name.trim()) return; // Ignore empty input
+
+  await addDoc(collection(db, "shoppingList"), {
+    name,
+    completed: false,
+    userId,
+    createdAt: serverTimestamp(), // For sorting
+  });
 };
 
-// This function updates data in firebase
-export const updateData = async (id, updatedFields) => {
+/**
+ * Update an item in Firestore
+ * @param {string} id - Document ID
+ * @param {object} updatedFields - Fields to update
+ */
+export const updateItem = async (id, updatedFields) => {
   try {
-    const itemRef = doc(db, "shoppingList", id); //Find documents with id
-    await updateDoc(itemRef, updatedFields);// update only new fields
-    console.log("path",itemRef.path)
-    console.log("data updated successfully");
-
-  }catch (error) {
-    console.error("erroe upadating data", error)
-
+    const itemRef = doc(db, "shoppingList", id);
+    await updateDoc(itemRef, updatedFields);
+    console.log("Updated:", id);
+  } catch (error) {
+    console.error("Error updating item:", error);
   }
+};
 
-
-
-}
+/**
+ * Delete an item from Firestore
+ * @param {string} id - Document ID
+ */
+export const deleteItem = async (id) => {
+  try {
+    await deleteDoc(doc(db, "shoppingList", id));
+    console.log("Deleted:", id);
+  } catch (error) {
+    console.error("Error deleting item:", error);
+  }
+};
