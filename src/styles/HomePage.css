@@ -1,0 +1,92 @@
+.home-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.home-header {
+  text-align: center;
+  padding: 3rem 1rem 1rem;
+}
+
+.home-header h1 {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  color: #2196f3;
+}
+
+.home-header p {
+  font-size: 1.2rem;
+  color: #555;
+}
+
+.home-main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.home-card {
+  background: white;
+  padding: 2rem 3rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 500px;
+}
+
+.home-card h2 {
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+}
+
+.home-card p {
+  margin-bottom: 2rem;
+  color: #666;
+}
+
+.home-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.btn {
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-login {
+  background-color: #2196f3;
+  color: white;
+}
+
+.btn-login:hover {
+  background-color: #1976d2;
+}
+
+.btn-signup {
+  background-color: #4caf50;
+  color: white;
+}
+
+.btn-signup:hover {
+  background-color: #388e3c;
+}
+
+.home-footer {
+  text-align: center;
+  padding: 1rem;
+  background: transparent;
+  font-size: 0.9rem;
+  color: #777;
+}

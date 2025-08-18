@@ -37,8 +37,8 @@ export const fetchData = async () => {
 export const addData = async (name) => {
   const user = auth.currentUser; // get current user
   if (!user) return;
-// if input is empty
-  if (name.trim() !== "") return; 
+
+  if (!name.trim()) return; 
   
     await addDoc(collection(db, "shoppingList"), {
        name,
