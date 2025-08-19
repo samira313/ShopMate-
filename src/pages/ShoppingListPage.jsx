@@ -61,19 +61,35 @@ function ShoppingListPage() {
 
   if (loading) return <Spinner />;
 
+  
   return (
-    <div className="shopping-container">
+    <div className="shopping-list-container">
       <h2>🛒 My Shopping List</h2>
 
       {/* Filter buttons */}
-      <div className="filtered">
-        <button onClick={() => setFilter("all")}>All</button>
-        <button onClick={() => setFilter("completed")}>Completed</button>
-        <button onClick={() => setFilter("pending")}>Pending</button>
+      <div className="filter-tabs">
+        <button
+          className={filter === "all" ? "active" : ""}
+          onClick={() => setFilter("all")}
+        >
+          All
+        </button>
+        <button
+          className={filter === "completed" ? "active" : ""}
+          onClick={() => setFilter("completed")}
+        >
+          Completed
+        </button>
+        <button
+          className={filter === "pending" ? "active" : ""}
+          onClick={() => setFilter("pending")}
+        >
+          Pending
+        </button>
       </div>
 
-      {/* Add new item form */}
-      <form onSubmit={handleAddItem}>
+      {/* Add new item */}
+      <form className="add-form" onSubmit={handleAddItem}>
         <input
           type="text"
           placeholder="Enter item..."
@@ -85,14 +101,20 @@ function ShoppingListPage() {
 
       {/* Show list */}
       {items.length === 0 ? (
-        <p className="empty-message">Your list is empty</p>
+        <p className="empty-message">✨ Your shopping list is empty!</p>
       ) : (
-        <ul>
+        <ul className="shopping-list">
           {filteredItems.map((item) => (
-            <li key={item.id} className={item.completed ? "completed" : ""}>
-              {item.name}
-              <button onClick={() => handleToggle(item.id, item.completed)}>✅</button>
-              <button onClick={() => handleDelete(item.id)}>❌</button>
+            <li key={item.id} className={`shopping-item ${item.completed ? "completed" : ""}`}>
+              <span>{item.name}</span>
+              <div className="actions">
+                <button onClick={() => handleToggle(item.id, item.completed)}>
+                  ✅
+                </button>
+                <button onClick={() => handleDelete(item.id)}>
+                  ❌
+                </button>
+              </div>
             </li>
           ))}
         </ul>
@@ -100,5 +122,4 @@ function ShoppingListPage() {
     </div>
   );
 }
-
 export default ShoppingListPage;
