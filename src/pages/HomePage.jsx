@@ -1,8 +1,18 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { getList } from "../services/listService";
 import "../styles/HomePage.css";
 
 export default function HomePage() {
+   useEffect(() => {
+    async function fetchData() {
+      const data = await getList("shoppingList1");
+      console.log("Fetched list:", data);
+    }
+    fetchData();
+  }, []);
+
   return (
     <div className="home-container">
       <header className="home-header">
