@@ -29,7 +29,7 @@ export default defineConfig({
           },
         ],
           build: {
-    outDir: 'dist',   // 👈 خروجی باید همون dist باشه
+    outDir: 'dist', 
   },
         screenshots: [
           {
