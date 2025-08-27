@@ -5,6 +5,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 export default defineConfig({
   plugins: [
     react(),
+    
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
@@ -27,6 +28,9 @@ export default defineConfig({
             type: 'image/png',
           },
         ],
+          build: {
+    outDir: 'dist',   // 👈 خروجی باید همون dist باشه
+  },
         screenshots: [
           {
             src: '/screenshot1.png',
