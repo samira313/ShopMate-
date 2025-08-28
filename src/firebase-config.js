@@ -13,7 +13,8 @@ const firebaseConfig = {
   storageBucket: "shopmate-960cd.firebasestorage.app",
   messagingSenderId: "37107611184",
   appId: "1:37107611184:web:e57961b1d9e87064f55ff5",
-  measurementId: "G-D4VL7M2B8W"
+  measurementId: "G-D4VL7M2B8W",
+  databaseURL: "https://shopmate-960cd-default-rtdb.europe-west1.firebasedatabase.app/"
 };
 
 // Initialize Firebase
