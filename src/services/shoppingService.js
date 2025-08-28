@@ -1,52 +1,67 @@
-//Import required Firebase functions
-import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from "firebase/firestore";
-import { db } from "../firebase-config"; // make sure db is exported from firebase-config.js
+import React, { useEffect, useState } from "react";
+import { addItem, updateItem, deleteItem, subscribeToItems } from "../services/firebaseService";
 
-//  1. ADD a new shopping item to Firestore
-export const addItem = async (userId, itemName) => {
-  try {
-    await addDoc(collection(db, "shoppingLists"), {
-      userId,       // which user owns this item
-      name: itemName,
-      completed: false,  // initially not checked
-      createdAt: new Date()
-    });
-  } catch (error) {
-    console.error("Error adding item:", error);
-  }
-};
+function ShoppingListPage({ user }) {
+  const [items, setItems] = useState([]);
+  const [newItem, setNewItem] = useState("");
 
-//  2. GET all items for a specific user
-export const getItems = async (userId) => {
-  try {
-    const querySnapshot = await getDocs(collection(db, "shoppingLists"));
-    // filter items that belong only to this user
-    const items = querySnapshot.docs
-      .map(doc => ({ id: doc.id, ...doc.data() }))
-      .filter(item => item.userId === userId);
-    return items;
-  } catch (error) {
-    console.error("Error fetching items:", error);
-    return [];
-  }
-};
+  // ✅ Listen to realtime updates
+  useEffect(() => {
+    if (!user?.email) return;
 
-//  3. UPDATE item status or name
-export const updateItem = async (id, updatedData) => {
-  try {
-    const itemRef = doc(db, "shoppingLists", id);
-    await updateDoc(itemRef, updatedData);
-  } catch (error) {
-    console.error("Error updating item:", error);
-  }
-};
+    const unsubscribe = subscribeToItems(user.email, setItems);
 
-//  4. DELETE an item from Firestore
-export const deleteItem = async (id) => {
-  try {
-    const itemRef = doc(db, "shoppingLists", id);
-    await deleteDoc(itemRef);
-  } catch (error) {
-    console.error("Error deleting item:", error);
-  }
-};
+    return () => unsubscribe(); // cleanup when component unmounts
+  }, [user]);
+
+  // Add item
+  const handleAdd = async () => {
+    if (!newItem.trim()) return;
+    await addItem(user.email, newItem, []); // sharedWith empty for now
+    setNewItem("");
+  };
+
+  // Toggle completed
+  const toggleComplete = async (id, completed) => {
+    await updateItem(id, { completed });
+  };
+
+  // Delete item
+  const handleDelete = async (id) => {
+    await deleteItem(id);
+  };
+
+  return (
+    <div>
+      <h2>🛒 My Shopping List</h2>
+
+      <input
+        type="text"
+        value={newItem}
+        onChange={(e) => setNewItem(e.target.value)}
+        placeholder="Enter item..."
+      />
+      <button onClick={handleAdd}>Add</button>
+
+      <ul>
+        {items.map((item) => (
+          <li key={item.id}>
+            <span
+              style={{
+                textDecoration: item.completed ? "line-through" : "none",
+              }}
+            >
+              {item.name}
+            </span>
+            <button onClick={() => toggleComplete(item.id, !item.completed)}>
+              {item.completed ? "Undo" : "Complete"}
+            </button>
+            <button onClick={() => handleDelete(item.id)}>❌ Delete</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default ShoppingListPage;

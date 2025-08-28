@@ -1,88 +1,81 @@
-// Connect to Firestore database
- // Import Firebase config and Firestore functions
-import { db } from '../firebase-config';
-import { 
-  collection, 
-  addDoc,
-  onSnapshot,
-  deleteDoc,
-  doc,
-  updateDoc,
-  serverTimestamp, 
-  query, 
-  where, 
-  orderBy 
-    }
-     from 'firebase/firestore';
+import { getDatabase, ref, push, update, remove, onValue, off } from "firebase/database";
+import app from "../firebase-config";
 
+// ✅ Initialize Realtime Database
+const db = getDatabase(app);
 
-/**
- * Subscribe to items in Firestore in real-time
- * @param {string} userId - Current user's UID
- * @param {function} callback - Function to run when data changes
- * @returns {function} unsubscribe function
- */
-export const subscribeToItems = (userId, callback) => {
-  // Build query for user's shopping list
-  const q = query(
-    collection(db, "shoppingList"),
-    where("userId", "==", userId),
-    orderBy("createdAt", "desc")
-  );
+// ------------------------------
+// ADD a new shopping item
+// ------------------------------
+export const addItem = async (userId, name, sharedWith = []) => {
+  try {
+    if (!userId || !name.trim()) return;
 
-  // Listen to Firestore changes in real-time
-  const unsubscribe = onSnapshot(q, (querySnapshot) => {
-    const items = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    callback(items); // Send data back to component
-  });
-
-  return unsubscribe; // Component can stop listening when unmounted
+    const newItemRef = push(ref(db, "shoppingLists"));
+    await update(newItemRef, {
+      userId,
+      name,
+      sharedWith, // array of emails
+      completed: false,
+      createdAt: Date.now(),
+    });
+  } catch (error) {
+    console.error("❌ Error adding item:", error);
+  }
 };
 
-/**
- * Add a new item to Firestore
- * @param {string} userId - Current user's UID
- * @param {string} name - Item name
- */
-export const addItem = async (userId, name) => {
-  if (!userId) return;
-  if (!name.trim()) return; // Ignore empty input
-
-  await addDoc(collection(db, "shoppingList"), {
-    name,
-    completed: false,
-    userId,
-    createdAt: serverTimestamp(), // For sorting
-  });
-};
-
-/**
- * Update an item in Firestore
- * @param {string} id - Document ID
- * @param {object} updatedFields - Fields to update
- */
+// ------------------------------
+// UPDATE item
+// ------------------------------
 export const updateItem = async (id, updatedFields) => {
   try {
-    const itemRef = doc(db, "shoppingList", id);
-    await updateDoc(itemRef, updatedFields);
-    console.log("Updated:", id);
+    const itemRef = ref(db, `shoppingLists/${id}`);
+    await update(itemRef, updatedFields);
   } catch (error) {
-    console.error("Error updating item:", error);
+    console.error("❌ Error updating item:", error);
   }
 };
 
-/**
- * Delete an item from Firestore
- * @param {string} id - Document ID
- */
+// ------------------------------
+// DELETE item
+// ------------------------------
 export const deleteItem = async (id) => {
   try {
-    await deleteDoc(doc(db, "shoppingList", id));
-    console.log("Deleted:", id);
+    const itemRef = ref(db, `shoppingLists/${id}`);
+    await remove(itemRef);
   } catch (error) {
-    console.error("Error deleting item:", error);
+    console.error("❌ Error deleting item:", error);
   }
+};
+
+// ------------------------------
+// SUBSCRIBE to realtime updates
+// ------------------------------
+export const subscribeToItems = (userEmail, callback) => {
+  const itemsRef = ref(db, "shoppingLists");
+
+  const listener = onValue(itemsRef, (snapshot) => {
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+
+      const items = Object.entries(data).map(([id, item]) => ({
+        id,
+        ...item,
+      }));
+
+      // Filter only items owned by user OR shared with user
+      const filtered = items.filter(
+        (item) =>
+          item.userId === userEmail ||
+          (item.sharedWith && item.sharedWith.includes(userEmail))
+      );
+
+      callback(filtered);
+    } else {
+      callback([]);
+    }
+  });
+
+  // ✅ return cleanup function
+  return () => off(itemsRef, "value", listener);
 };
