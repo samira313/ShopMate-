@@ -1,4 +1,4 @@
-import { ref, get, child } from "firebase/database";
+import { ref, get, child, update } from "firebase/database";
 import  {db}  from "../firebase-config";
 
 
@@ -17,3 +17,25 @@ export async function getList(listId) {
     console.log(error);
   }
 }
+
+
+
+export const handleShare = async (itemId, email) => {
+  try {
+    const itemRef = ref(db, `shoppingLists/${itemId}`);
+    const snapshot = await get(itemRef);
+
+    if (snapshot.exists()) {
+      const item = snapshot.val();
+      const sharedWith = item.sharedWith || [];
+
+      if (!sharedWith.includes(email)) {
+        await update(itemRef, {
+          sharedWith: [...sharedWith, email],
+        });
+      }
+    }
+  } catch (error) {
+    console.error("Error sharing item:", error);
+  }
+};

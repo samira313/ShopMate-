@@ -11,7 +11,7 @@ function ShoppingListPage() {
   const [newItem, setNewItem] = useState(""); // input field state
   const [loading, setLoading] = useState(true); // loading spinner
   const [filter, setFilter] = useState("all"); // all | completed | pending
-
+  const [shareEmail, setShareEmail] = useState("");
   // Subscribe to Firestore in real-time
   useEffect(() => {
     if (!currentUser) return;
@@ -51,6 +51,16 @@ function ShoppingListPage() {
     await deleteItem(id);
    
   };
+  //handle share 
+  const handleShare = async (id) => {
+  if (!shareEmail.trim()) return;
+
+  await updateItem(id, {
+    sharedWith: [shareEmail],
+
+  });
+  setShareEmail("");
+}
 
   // Filter items before displaying
   const filteredItems = items.filter((item) => {
@@ -97,7 +107,15 @@ function ShoppingListPage() {
           onChange={(e) => setNewItem(e.target.value)}
         />
         <button type="submit">Add</button>
+
       </form>
+<input 
+  type="email" 
+  placeholder="Enter email to share with" 
+  value={shareEmail} 
+  onChange={(e) => setShareEmail(e.target.value)} 
+/>
+<button onClick={() => handleShare(items.id)}>Share</button>
 
       {/* Show list */}
       {items.length === 0 ? (
