@@ -1,12 +1,11 @@
 import { getDatabase, ref, push, update, remove, onValue, off } from "firebase/database";
 import app from "../firebase-config";
 
-// ✅ Initialize Realtime Database
+//  Initialize Realtime Database
 const db = getDatabase(app);
 
-// ------------------------------
+
 // ADD a new shopping item
-// ------------------------------
 export const addItem = async (userId, name, sharedWith = []) => {
   try {
     if (!userId || !name.trim()) return;
@@ -20,37 +19,36 @@ export const addItem = async (userId, name, sharedWith = []) => {
       createdAt: Date.now(),
     });
   } catch (error) {
-    console.error("❌ Error adding item:", error);
+    console.error("Error adding item:", error);
   }
 };
 
-// ------------------------------
 // UPDATE item
-// ------------------------------
+
 export const updateItem = async (id, updatedFields) => {
   try {
     const itemRef = ref(db, `shoppingLists/${id}`);
-    await update(itemRef, updatedFields);
+    await update(itemRef, {...updatedFields});
   } catch (error) {
-    console.error("❌ Error updating item:", error);
+    console.error("Error updating item:", error);
   }
 };
 
-// ------------------------------
+
 // DELETE item
-// ------------------------------
+
 export const deleteItem = async (id) => {
   try {
     const itemRef = ref(db, `shoppingLists/${id}`);
     await remove(itemRef);
   } catch (error) {
-    console.error("❌ Error deleting item:", error);
+    console.error("Error deleting item:", error);
   }
 };
 
-// ------------------------------
+
 // SUBSCRIBE to realtime updates
-// ------------------------------
+
 export const subscribeToItems = (userEmail, callback) => {
   const itemsRef = ref(db, "shoppingLists");
 
@@ -76,6 +74,6 @@ export const subscribeToItems = (userEmail, callback) => {
     }
   });
 
-  // ✅ return cleanup function
+  //  return cleanup function
   return () => off(itemsRef, "value", listener);
 };

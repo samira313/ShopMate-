@@ -5,7 +5,7 @@ function ShoppingListPage({ user }) {
   const [items, setItems] = useState([]);
   const [newItem, setNewItem] = useState("");
 
-  // ✅ Listen to realtime updates
+  // Listen to realtime updates
   useEffect(() => {
     if (!user?.email) return;
 
