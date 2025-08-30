@@ -9,7 +9,7 @@ function ShoppingListPage({ user }) {
   useEffect(() => {
     if (!user?.email) return;
 
-    const unsubscribe = subscribeToItems(user.email, setItems);
+    const unsubscribe = subscribeToItems(user, setItems);
 
     return () => unsubscribe(); // cleanup when component unmounts
   }, [user]);
