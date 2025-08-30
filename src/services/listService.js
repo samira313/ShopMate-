@@ -18,8 +18,6 @@ export async function getList(listId) {
   }
 }
 
-
-
 export const handleShare = async (itemId, email) => {
   try {
     const itemRef = ref(db, `shoppingLists/${itemId}`);
