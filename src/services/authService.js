@@ -2,7 +2,7 @@
 // These functions help us create new users, log in existing users, log them out,
 // and listen for authentication state changes.
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
-
+import { setPersistence, browserLocalPersistence } from "firebase/auth";
 // Import the 'auth' object (Firebase Authentication instance) from our firebase configuration file
 import { auth } from "../firebase-config";
 
@@ -35,3 +35,11 @@ export const authListener = (callback) => {
     callback(user);// Pass the user object (or null) to our callback function
   });
 };
+
+setPersistence(auth, browserLocalPersistence)
+  .then(() => {
+    console.log("Auth persistence set to LOCAL");
+  })
+  .catch((error) => {
+    console.error("Persistence error:", error);
+  });
