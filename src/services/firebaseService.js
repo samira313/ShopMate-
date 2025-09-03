@@ -65,9 +65,9 @@ export const subscribeToItems = (userEmail, callback) => {
         (item) => 
           item.userId === userEmail || 
         (item.sharedWith && item.sharedWith.includes(userEmail))
-        
       )
-
+    console.log("debug", userEmail);
+    console.log("debug 2" , items);
       callback(filtered);
     } else {
       callback([]);
