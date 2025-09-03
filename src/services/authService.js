@@ -32,11 +32,12 @@ export const authListener = (callback) => {
 // It runs every time the authentication state changes
 // The callback receives a 'user' object if logged in, or 'null' if logged out
   onAuthStateChanged(auth, (user) => {
+    
     callback(user);// Pass the user object (or null) to our callback function
   });
 };
 
-setPersistence(auth, browserLocalPersistence)
+await setPersistence(auth, browserLocalPersistence)
   .then(() => {
     console.log("Auth persistence set to LOCAL");
   })

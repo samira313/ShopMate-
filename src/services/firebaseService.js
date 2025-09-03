@@ -61,7 +61,12 @@ export const subscribeToItems = (userEmail, callback) => {
       }));
 
       // Filter only items owned by user OR shared with user
-      const filtered = items;
+      const filtered = items.filter(
+        (item) => 
+          item.userId === userEmail || 
+        (item.sharedWith && item.sharedWith.includes(userEmail))
+        
+      )
 
       callback(filtered);
     } else {
