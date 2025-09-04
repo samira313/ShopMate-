@@ -90,3 +90,18 @@
   font-size: 0.9rem;
   color: #777;
 }
+@media (max-width: 768px) {
+  .home-container {
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .home-header h1 {
+    font-size: 2rem;
+  }
+
+  .home-card {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+}
