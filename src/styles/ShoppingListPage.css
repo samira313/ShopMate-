@@ -112,15 +112,47 @@
 }
 
 .actions button:first-child:hover {
-  color: #2e7d32; /* Green */
+  color: #2e7d32; 
 }
 
 .actions button:last-child:hover {
-  color: #e53935; /* Red */
+  color: #e53935; 
 }
 
 .empty-message {
   text-align: center;
   color: #888;
   font-style: italic;
+}
+.shopping-list-container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #f9faff;
+  border-radius: 12px;
+}
+@media (max-width: 768px) {
+  .shopping-list-container {
+    max-width: 100%;   
+    margin: 10px;      
+    padding: 15px;
+  }
+
+  .filter-tabs {
+    flex-direction: column;  
+    gap: 10px;
+  }
+
+  .add-form {
+    flex-direction: column; 
+  }
+
+  .add-form input {
+    width: 100%;  
+    margin-bottom: 10px;
+  }
+
+  .add-form button {
+    width: 100%; 
+  }
 }
