@@ -3,13 +3,13 @@
   flex-direction: column;
   min-height: 100vh;
   background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #333;
 }
 
 .home-header {
   text-align: center;
-  padding: 3rem 1rem 1rem;
+  padding: 3rem 1rem;
 }
 
 .home-header h1 {
@@ -32,7 +32,7 @@
 }
 
 .home-card {
-  background: white;
+  background: #fff;
   padding: 2rem 3rem;
   border-radius: 12px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
@@ -50,58 +50,27 @@
   color: #666;
 }
 
-.home-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-}
 
-.btn {
-  padding: 0.8rem 2rem;
-  font-size: 1rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn-login {
-  background-color: #2196f3;
-  color: white;
-}
-
-.btn-login:hover {
-  background-color: #1976d2;
-}
-
-.btn-signup {
-  background-color: #4caf50;
-  color: white;
-}
-
-.btn-signup:hover {
-  background-color: #388e3c;
-}
-
-.home-footer {
-  text-align: center;
-  padding: 1rem;
-  background: transparent;
-  font-size: 0.9rem;
-  color: #777;
-}
 @media (max-width: 768px) {
-  .home-container {
-    padding: 1rem;
-    text-align: center;
-  }
-
   .home-header h1 {
     font-size: 2rem;
   }
 
+  .home-header p {
+    font-size: 1rem;
+  }
+
   .home-card {
     width: 100%;
-    margin-bottom: 1rem;
+    padding: 1.5rem;
+    margin: 0 1rem;
+  }
+
+  .home-card h2 {
+    font-size: 1.5rem;
+  }
+
+  .home-card p {
+    font-size: 0.9rem;
   }
 }
