@@ -48,7 +48,7 @@ export const deleteItem = async (id) => {
 
 
 // SUBSCRIBE  to realtime updates
-export const subscribeToItems = (userEmail, callback) => {
+export const subscribeToItems = (user, callback) => {
   const itemsRef = ref(db, "shoppingLists");
 
   const listener = onValue(itemsRef, (snapshot) => {
@@ -60,13 +60,13 @@ export const subscribeToItems = (userEmail, callback) => {
         ...item,
       }));
 
-      // Filter only items owned by user OR shared with user
-      const filtered = items.filter(
-        (item) => 
-          item.userId === userEmail || 
-        (item.sharedWith && item.sharedWith.includes(userEmail))
-      )
-    console.log("debug", userEmail);
+ 
+    // Filter only items owned by user OR shared with user
+const filtered = items.filter((item) => {
+  const sharedWith = Array.isArray(item.sharedWith) ? item.sharedWith : [];
+  return item.userId === user.uid || sharedWith.includes(user.email);
+});
+    console.log("debug", user.email);
     console.log("debug 2" , items);
       callback(filtered);
     } else {
