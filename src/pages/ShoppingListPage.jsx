@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { addItem, updateItem, deleteItem, subscribeToItems } from "../services/firebaseService";
+import { handleShare } from "../services/listService";
 import { useAuth } from "../hooks/UseAuth"; 
 import Spinner from "../components/Spinner";
 import "../styles/ShoppingListPage.css";
@@ -17,7 +18,7 @@ function ShoppingListPage() {
     if (!currentUser) return;
 
     // subscribeToItems will listen for changes in Firestore
-    const unsubscribe = subscribeToItems(currentUser.uid, (data) => {
+    const unsubscribe = subscribeToItems(currentUser, (data) => {
       setItems(data);
       setLoading(false);
     });
@@ -52,15 +53,24 @@ function ShoppingListPage() {
    
   };
   //handle share 
-  const handleShare = async (id) => {
-  if (!shareEmail.trim()) return;
+  const handleShareClick = async (itemId, email) => {
+  const result = await handleShare(itemId, email);
 
-  await updateItem(id, {
-    sharedWith: [shareEmail],
+  if (result.success) {
+    toast.success(result.message); 
+  } else {
+    toast.error(result.message); 
+  }
+};
+//   const handleShare = async (id) => {
+//   if (!shareEmail.trim()) return;
 
-  });
-  setShareEmail("");
-}
+//   await updateItem(id, {
+//     sharedWith: [shareEmail],
+
+//   });
+//   setShareEmail("");
+// }
 
   // Filter items before displaying
   const filteredItems = items.filter((item) => {
@@ -115,7 +125,7 @@ function ShoppingListPage() {
   value={shareEmail} 
   onChange={(e) => setShareEmail(e.target.value)} 
 />
-<button onClick={() => handleShare(items.id)}>Share</button>
+<button onClick={() => handleShareClick(items.id, shareEmail)}>Share</button>
 
       {/* Show list */}
       {items.length === 0 ? (
