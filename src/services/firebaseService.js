@@ -1,5 +1,6 @@
-import { getDatabase, ref, push, update, remove, onValue, off } from "firebase/database";
+import { getDatabase, ref, push, update, remove } from "firebase/database";
 import app from "../firebase-config";
+import { collection, onSnapshot} from "firebase/firestore";
 
 //  Initialize Realtime Database
 const db = getDatabase(app);
@@ -48,32 +49,36 @@ export const deleteItem = async (id) => {
 
 
 // SUBSCRIBE  to realtime updates
-export const subscribeToItems = (user, callback) => {
-  const itemsRef = ref(db, "shoppingLists");
+export const subscribeToItems = (userEmail, callback) => {
+  const itemsRef = collection(db, "shoppingLists");
 
-  const listener = onValue(itemsRef, (snapshot) => {
-    if (snapshot.exists()) {
-      const data = snapshot.val();
+  return onSnapshot(itemsRef, (snapshot) => {
+    const items = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
 
-      const items = Object.entries(data).map(([id, item]) => ({
-        id,
-        ...item,
-      }));
+    const filtered = items.filter(
+      (item) =>
+        item.userId === userEmail || (item.sharedWith && item.sharedWith.includes(userEmail))
+    );
 
- 
-    // Filter only items owned by user OR shared with user
-const filtered = items.filter((item) => {
-  const sharedWith = Array.isArray(item.sharedWith) ? item.sharedWith : [];
-  return item.userId === user.uid || sharedWith.includes(user.email);
-});
-    console.log("debug", user.email);
-    console.log("debug 2" , items);
-      callback(filtered);
-    } else {
-      callback([]);
-    }
+    callback(filtered);
   });
-
-  //  return cleanup function
-  return () => off(itemsRef, "value", listener);
 };
+//     // Filter only items owned by user OR shared with user
+// const filtered = items.filter((item) => {
+//   const sharedWith = Array.isArray(item.sharedWith) ? item.sharedWith : [];
+//   return item.userId === user.uid || sharedWith.includes(user.email);
+// });
+//     console.log("debug", user.email);
+//     console.log("debug 2" , items);
+//       callback(filtered);
+//     } else {
+//       callback([]);
+//     }
+//   });
+
+//   //  return cleanup function
+//   return () => off(itemsRef, "value", listener);
+// };

@@ -1,38 +1,81 @@
-import { ref, get, child, update } from "firebase/database";
-import  {db}  from "../firebase-config";
+import {
+  doc,
+  getDoc,
+  getDocs,
+  updateDoc,
+  onSnapshot,
+  collection,
+  addDoc,
+  deleteDoc,
+} from "firebase/firestore";
+import { db } from "../firebase-config";
 
+// --- GET an item ---
 
-// Add a list
-export async function getList(listId) {
-  const dbRef = ref(db);
+export const getList = async (listName) => {
   try {
-    const snapshot = await get(child(dbRef, `shoppingLists/${listId}`));
-    if(snapshot.exists()) {
-      return snapshot.val();
-    }else {
-      console.log("No data available");
-      return null;
-    }
-  }catch (error) {
-    console.log(error);
+    const querySnapshot = await getDocs(collection(db, listName));
+    const items = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    return items;
+  } catch (error) {
+    console.error("Error fetching list:", error);
+    return [];
   }
-}
+};
+// --- Add a new item ---
+export const addItem = async (userId, name) => {
+  try {
+    const newItem = {
+      name,
+      completed: false,
+      userId,
+      sharedWith: [], // start with empty array
+      createdAt: Date.now(),
+    };
 
+    await addDoc(collection(db, "shoppingLists"), newItem);
+  } catch (error) {
+    console.error("Error adding item:", error);
+  }
+};
 
+// --- Update item ---
+export const updateItem = async (id, updatedFields) => {
+  try {
+    const itemRef = doc(db, "shoppingLists", id);
+    await updateDoc(itemRef, updatedFields);
+  } catch (error) {
+    console.error("Error updating item:", error);
+  }
+};
+
+// --- Delete item ---
+export const deleteItem = async (id) => {
+  try {
+    const itemRef = doc(db, "shoppingLists", id);
+    await deleteDoc(itemRef);
+  } catch (error) {
+    console.error("Error deleting item:", error);
+  }
+};
+
+// --- Share item ---
 export const handleShare = async (itemId, email) => {
   try {
-    const itemRef = ref(db, `shoppingLists/${itemId}`);
-    const snapshot = await get(itemRef);
+    const itemRef = doc(db, "shoppingLists", itemId);
+    const snapshot = await getDoc(itemRef);
 
     if (snapshot.exists()) {
-      const item = snapshot.val();
-      const sharedWith = Array.isArray(item.sharedWith) ? item.sharedWith : [];
+      const item = snapshot.data();
+      let sharedWith = item.sharedWith || [];
+
+      if (!Array.isArray(sharedWith)) sharedWith = [];
 
       if (sharedWith.includes(email)) {
-        return { success: false, message: `${email} already has access`};
+        return { success: false, message: `${email} already has access` };
       }
 
-      await update(itemRef, {
+      await updateDoc(itemRef, {
         sharedWith: [...sharedWith, email],
       });
 
@@ -44,4 +87,17 @@ export const handleShare = async (itemId, email) => {
     console.error("Error sharing item:", error);
     return { success: false, message: "Error while sharing" };
   }
+};
+
+// --- Subscribe to realtime updates ---
+export const subscribeToItems = (callback) => {
+  const collectionRef = collection(db, "shoppingLists");
+
+  return onSnapshot(collectionRef, (snapshot) => {
+    const items = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    callback(items);
+  });
 };

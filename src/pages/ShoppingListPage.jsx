@@ -1,78 +1,77 @@
 import React, { useState, useEffect } from "react";
-import { addItem, updateItem, deleteItem, subscribeToItems } from "../services/firebaseService";
-import { handleShare } from "../services/listService";
-import { useAuth } from "../hooks/UseAuth"; 
+import {
+  addItem,
+  updateItem,
+  deleteItem,
+  handleShare,
+  subscribeToItems,
+} from "../services/listService";
+import {useAuth} from "../hooks/UseAuth";
 import Spinner from "../components/Spinner";
-import "../styles/ShoppingListPage.css";
 import { toast } from "react-toastify";
 
 function ShoppingListPage() {
-  const { currentUser } = useAuth(); // Get logged-in user's info
-  const [items, setItems] = useState([]); // shopping list
-  const [newItem, setNewItem] = useState(""); // input field state
-  const [loading, setLoading] = useState(true); // loading spinner
-  const [filter, setFilter] = useState("all"); // all | completed | pending
+  const { currentUser } = useAuth();
+  const [items, setItems] = useState([]);
+  const [newItem, setNewItem] = useState("");
+  const [filter, setFilter] = useState("all");
+  const [loading, setLoading] = useState(true);
   const [shareEmail, setShareEmail] = useState("");
-  // Subscribe to Firestore in real-time
+
+  // --- Realtime sync with Firestore ---
   useEffect(() => {
     if (!currentUser) return;
 
-    // subscribeToItems will listen for changes in Firestore
-    const unsubscribe = subscribeToItems(currentUser, (data) => {
-      setItems(data);
+    const unsubscribe = subscribeToItems((data) => {
+      // Only show items owned by user OR shared with user
+      const filtered = data.filter(
+        (item) =>
+          item.userId === currentUser.uid ||
+          (Array.isArray(item.sharedWith) &&
+            item.sharedWith.includes(currentUser.email))
+      );
+      setItems(filtered);
       setLoading(false);
     });
 
-    // Cleanup subscription when component unmounts
     return () => unsubscribe();
-
   }, [currentUser]);
 
-  // Add new item
+  // --- Add new item ---
   const handleAddItem = async (e) => {
     e.preventDefault();
     if (!newItem.trim()) {
       toast.error("Please enter an item name");
       return;
     }
-
     await addItem(currentUser.uid, newItem);
-    setNewItem(""); // clear input field
-    //remember: No need to manually reload (real-time handles it)
+    setNewItem("");
   };
 
-  // Toggle completed status
+  // --- Toggle completed ---
   const handleToggle = async (id, currentStatus) => {
     await updateItem(id, { completed: !currentStatus });
-   
   };
 
-  // Delete item
+  // --- Delete item ---
   const handleDelete = async (id) => {
     await deleteItem(id);
-   
   };
-  //handle share 
+
+  // --- Share item ---
   const handleShareClick = async (itemId, email) => {
-  const result = await handleShare(itemId, email);
+    if (!email.trim()) return;
 
-  if (result.success) {
-    toast.success(result.message); 
-  } else {
-    toast.error(result.message); 
-  }
-};
-//   const handleShare = async (id) => {
-//   if (!shareEmail.trim()) return;
+    const result = await handleShare(itemId, email);
+    if (result.success) {
+      toast.success(result.message);
+      setShareEmail("");
+    } else {
+      toast.error(result.message);
+    }
+  };
 
-//   await updateItem(id, {
-//     sharedWith: [shareEmail],
-
-//   });
-//   setShareEmail("");
-// }
-
-  // Filter items before displaying
+  // --- Filter items ---
   const filteredItems = items.filter((item) => {
     if (filter === "completed") return item.completed;
     if (filter === "pending") return !item.completed;
@@ -81,34 +80,18 @@ function ShoppingListPage() {
 
   if (loading) return <Spinner />;
 
-  
   return (
     <div className="shopping-list-container">
       <h2>🛒 My Shopping List</h2>
 
-      {/* Filter buttons */}
+      {/* Filter */}
       <div className="filter-tabs">
-        <button
-          className={filter === "all" ? "active" : ""}
-          onClick={() => setFilter("all")}
-        >
-          All
-        </button>
-        <button
-          className={filter === "completed" ? "active" : ""}
-          onClick={() => setFilter("completed")}
-        >
-          Completed
-        </button>
-        <button
-          className={filter === "pending" ? "active" : ""}
-          onClick={() => setFilter("pending")}
-        >
-          Pending
-        </button>
+        <button onClick={() => setFilter("all")}>All</button>
+        <button onClick={() => setFilter("completed")}>Completed</button>
+        <button onClick={() => setFilter("pending")}>Pending</button>
       </div>
 
-      {/* Add new item */}
+      {/* Add item */}
       <form className="add-form" onSubmit={handleAddItem}>
         <input
           type="text"
@@ -117,30 +100,33 @@ function ShoppingListPage() {
           onChange={(e) => setNewItem(e.target.value)}
         />
         <button type="submit">Add</button>
-
       </form>
-<input 
-  type="email" 
-  placeholder="Enter email to share with" 
-  value={shareEmail} 
-  onChange={(e) => setShareEmail(e.target.value)} 
-/>
-<button onClick={() => handleShareClick(items.id, shareEmail)}>Share</button>
 
-      {/* Show list */}
-      {items.length === 0 ? (
-        <p className="empty-message">✨ Your shopping list is empty!</p>
+      {/* Share */}
+      <input
+        type="email"
+        placeholder="Enter email to share with"
+        value={shareEmail}
+        onChange={(e) => setShareEmail(e.target.value)}
+      />
+
+      {/* Show items */}
+      {filteredItems.length === 0 ? (
+        <p>Your shopping list is empty!</p>
       ) : (
         <ul className="shopping-list">
           {filteredItems.map((item) => (
-            <li key={item.id} className={`shopping-item ${item.completed ? "completed" : ""}`}>
+            <li key={item.id} className={item.completed ? "completed" : ""}>
               <span>{item.name}</span>
               <div className="actions">
                 <button onClick={() => handleToggle(item.id, item.completed)}>
-                  ✅
+                  ✔
                 </button>
-                <button onClick={() => handleDelete(item.id)}>
-                  ❌
+                <button onClick={() => handleDelete(item.id)}>❌</button>
+                <button
+                  onClick={() => handleShareClick(item.id, shareEmail)}
+                >
+                  Share
                 </button>
               </div>
             </li>
@@ -150,4 +136,5 @@ function ShoppingListPage() {
     </div>
   );
 }
+
 export default ShoppingListPage;
