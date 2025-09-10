@@ -1,22 +1,24 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { useEffect } from "react";
-import { getList } from "../services/listService";
+// src/pages/HomePage.jsx
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth }from "../hooks/UseAuth"; // Custom hook for authentication
 import "../styles/HomePage.css";
 
 export default function HomePage() {
-   useEffect(() => {
-    async function fetchData() {
-      const data = await getList("shoppingList1");
-      console.log("Fetched list:", data);
+  const { currentUser } = useAuth();
+  const navigate = useNavigate();
+
+  // If the user is logged in → redirect to shopping list
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/shopping-list");
     }
-    fetchData();
-  }, []);
+  }, [currentUser, navigate]);
 
   return (
     <div className="home-container">
       <header className="home-header">
-        <h1>ShopMate 🛒</h1>
+        <h1>🛍 ShopMate</h1>
         <p>Your smart shopping assistant</p>
       </header>
 
@@ -24,15 +26,21 @@ export default function HomePage() {
         <div className="home-card">
           <h2>Organize your shopping list easily</h2>
           <p>Stay on top of your groceries and never miss an item again!</p>
+        </div>
 
-          <div className="home-buttons">
-            <Link to="/login">
-              <button className="btn btn-login">Login</button>
-            </Link>
-            <Link to="/signup">
-              <button className="btn btn-signup">Sign Up</button>
-            </Link>
-          </div>
+        <div className="home-buttons">
+          <button
+            className="btn btn-login"
+            onClick={() => navigate("/login")}
+          >
+            Login
+          </button>
+          <button
+            className="btn btn-signup"
+            onClick={() => navigate("/signup")}
+          >
+            Sign Up
+          </button>
         </div>
       </main>
 

@@ -6,7 +6,7 @@ import {
   handleShare,
   subscribeToItems,
 } from "../services/listService";
-import {useAuth} from "../hooks/UseAuth";
+import { useAuth } from "../hooks/UseAuth"; // Custom hook for auth
 import Spinner from "../components/Spinner";
 import { toast } from "react-toastify";
 
@@ -18,12 +18,12 @@ function ShoppingListPage() {
   const [loading, setLoading] = useState(true);
   const [shareEmail, setShareEmail] = useState("");
 
-  // --- Realtime sync with Firestore ---
+  // --- Realtime Firestore subscription ---
   useEffect(() => {
     if (!currentUser) return;
 
     const unsubscribe = subscribeToItems((data) => {
-      // Only show items owned by user OR shared with user
+      // Only show user's items or items shared with them
       const filtered = data.filter(
         (item) =>
           item.userId === currentUser.uid ||
@@ -37,7 +37,7 @@ function ShoppingListPage() {
     return () => unsubscribe();
   }, [currentUser]);
 
-  // --- Add new item ---
+  // --- Add item ---
   const handleAddItem = async (e) => {
     e.preventDefault();
     if (!newItem.trim()) {
@@ -48,17 +48,17 @@ function ShoppingListPage() {
     setNewItem("");
   };
 
-  // --- Toggle completed ---
+  // --- Toggle complete ---
   const handleToggle = async (id, currentStatus) => {
     await updateItem(id, { completed: !currentStatus });
   };
 
-  // --- Delete item ---
-  const handleDelete = async (id) => {
+  // --- Delete ---
+  const handleDeleteClick = async (id) => {
     await deleteItem(id);
   };
 
-  // --- Share item ---
+  // --- Share ---
   const handleShareClick = async (itemId, email) => {
     if (!email.trim()) return;
 
@@ -84,14 +84,14 @@ function ShoppingListPage() {
     <div className="shopping-list-container">
       <h2>🛒 My Shopping List</h2>
 
-      {/* Filter */}
+      {/* Filter buttons */}
       <div className="filter-tabs">
         <button onClick={() => setFilter("all")}>All</button>
         <button onClick={() => setFilter("completed")}>Completed</button>
         <button onClick={() => setFilter("pending")}>Pending</button>
       </div>
 
-      {/* Add item */}
+      {/* Add new item */}
       <form className="add-form" onSubmit={handleAddItem}>
         <input
           type="text"
@@ -102,7 +102,7 @@ function ShoppingListPage() {
         <button type="submit">Add</button>
       </form>
 
-      {/* Share */}
+      {/* Share input */}
       <input
         type="email"
         placeholder="Enter email to share with"
@@ -110,7 +110,7 @@ function ShoppingListPage() {
         onChange={(e) => setShareEmail(e.target.value)}
       />
 
-      {/* Show items */}
+      {/* Items list */}
       {filteredItems.length === 0 ? (
         <p>Your shopping list is empty!</p>
       ) : (
@@ -122,7 +122,7 @@ function ShoppingListPage() {
                 <button onClick={() => handleToggle(item.id, item.completed)}>
                   ✔
                 </button>
-                <button onClick={() => handleDelete(item.id)}>❌</button>
+                <button onClick={() => handleDeleteClick(item.id)}>❌</button>
                 <button
                   onClick={() => handleShareClick(item.id, shareEmail)}
                 >
