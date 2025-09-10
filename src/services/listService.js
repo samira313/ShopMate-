@@ -1,35 +1,24 @@
 import {
   doc,
   getDoc,
-  getDocs,
   updateDoc,
-  onSnapshot,
+  deleteDoc,
   collection,
   addDoc,
-  deleteDoc,
+  onSnapshot,
 } from "firebase/firestore";
 import { db } from "../firebase-config";
 
-// --- GET an item ---
-
-export const getList = async (listName) => {
-  try {
-    const querySnapshot = await getDocs(collection(db, listName));
-    const items = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    return items;
-  } catch (error) {
-    console.error("Error fetching list:", error);
-    return [];
-  }
-};
-// --- Add a new item ---
+/**
+ * Add a new item
+ */
 export const addItem = async (userId, name) => {
   try {
     const newItem = {
       name,
       completed: false,
       userId,
-      sharedWith: [], // start with empty array
+      sharedWith: [], // keep emails of users with access
       createdAt: Date.now(),
     };
 
@@ -39,7 +28,9 @@ export const addItem = async (userId, name) => {
   }
 };
 
-// --- Update item ---
+/**
+ * Update an item (toggle completed or add fields)
+ */
 export const updateItem = async (id, updatedFields) => {
   try {
     const itemRef = doc(db, "shoppingLists", id);
@@ -49,7 +40,9 @@ export const updateItem = async (id, updatedFields) => {
   }
 };
 
-// --- Delete item ---
+/**
+ * Delete an item
+ */
 export const deleteItem = async (id) => {
   try {
     const itemRef = doc(db, "shoppingLists", id);
@@ -59,7 +52,9 @@ export const deleteItem = async (id) => {
   }
 };
 
-// --- Share item ---
+/**
+ * Share an item with another email
+ */
 export const handleShare = async (itemId, email) => {
   try {
     const itemRef = doc(db, "shoppingLists", itemId);
@@ -68,8 +63,6 @@ export const handleShare = async (itemId, email) => {
     if (snapshot.exists()) {
       const item = snapshot.data();
       let sharedWith = item.sharedWith || [];
-
-      if (!Array.isArray(sharedWith)) sharedWith = [];
 
       if (sharedWith.includes(email)) {
         return { success: false, message: `${email} already has access` };
@@ -89,7 +82,9 @@ export const handleShare = async (itemId, email) => {
   }
 };
 
-// --- Subscribe to realtime updates ---
+/**
+ * Subscribe to Firestore in real-time
+ */
 export const subscribeToItems = (callback) => {
   const collectionRef = collection(db, "shoppingLists");
 
