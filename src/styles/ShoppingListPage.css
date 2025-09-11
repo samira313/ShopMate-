@@ -61,7 +61,10 @@
   color: #fff;
   cursor: pointer;
 }
-
+.completed {
+  text-decoration: line-through;
+  color: gray;
+}
 @media (max-width: 768px) {
   .shopping-list-container {
     max-width: 100%;
