@@ -9,6 +9,7 @@ import {
 import { useAuth } from "../hooks/UseAuth"; // Custom hook for auth
 import Spinner from "../components/Spinner";
 import { toast } from "react-toastify";
+import "../styles/ShoppingListPage.css"
 
 function ShoppingListPage() {
   const { currentUser } = useAuth();
