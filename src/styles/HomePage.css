@@ -1,56 +1,71 @@
-.home-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
-}
-
-.home-header {
-  text-align: center;
-  padding: 3rem 1rem;
-}
-
-.home-header h1 {
-  font-size: 3rem;
-  margin-bottom: 0.5rem;
-  color: #2196f3;
-}
-
-.home-header p {
-  font-size: 1.2rem;
-  color: #555;
-}
-
+/* Main container */
 .home-main {
-  flex: 1;
   display: flex;
-  justify-content: center;
+  flex-direction: column;   /* stack vertically on mobile */
   align-items: center;
-  padding: 2rem;
+  justify-content: center;
+  padding: 20px;
 }
 
+/* Card box */
 .home-card {
   background: #fff;
-  padding: 2rem 3rem;
   border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  padding: 30px;
   text-align: center;
-  max-width: 500px;
+  max-width: 400px;         /* good size for desktop */
+  width: 90%;               /* shrink on mobile */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.home-card h2 {
-  margin-bottom: 1rem;
-  font-size: 1.8rem;
+/* Buttons container */
+.home-buttons {
+  display: flex;
+  flex-direction: column;   /* stack buttons on mobile */
+  gap: 12px;
+  margin-top: 20px;
 }
 
-.home-card p {
-  margin-bottom: 2rem;
-  color: #666;
+/* Common button style */
+.home-buttons .btn-login,
+.home-buttons .btn-signup {
+  padding: 12px 20px;
+  border-radius: 6px;
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;              /* full width inside card */
+  transition: background 0.3s ease;
 }
 
+/* Login button */
+.home-buttons .btn-login {
+  background: #007bff;
+  color: #fff;
+}
 
+.home-buttons .btn-login:hover {
+  background: #0056b3;
+}
+
+/* Signup button */
+.home-buttons .btn-signup {
+  background: #28a745;
+  color: #fff;
+}
+
+.home-buttons .btn-signup:hover {
+  background: #1e7e34;
+}
+
+/* Footer */
+.home-footer {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 14px;
+  color: #555;
+}
 @media (max-width: 768px) {
   .home-header h1 {
     font-size: 2rem;

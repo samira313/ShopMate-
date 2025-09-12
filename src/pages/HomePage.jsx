@@ -30,13 +30,13 @@ export default function HomePage() {
 
         <div className="home-buttons">
           <button
-            className="btn btn-login"
+            className="btn-login"
             onClick={() => navigate("/login")}
           >
             Login
           </button>
           <button
-            className="btn btn-signup"
+            className="btn-signup"
             onClick={() => navigate("/signup")}
           >
             Sign Up
