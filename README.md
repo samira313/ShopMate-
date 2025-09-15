@@ -1,12 +1,55 @@
-# React + Vite
+# 🛒 ShopMate
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+ShopMate is a smart shopping list application built with **React (Vite)** and **Firebase**.  
+It helps users organize their groceries, share lists with others, and keep everything synchronized in real-time.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## Expanding the ESLint configuration
+- **User Authentication**
+  - Sign up, log in, log out (Firebase Authentication).
+  - Persistent login session.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Shopping List Management**
+  - Add new items to your shopping list.
+  - Mark items as ✅ completed or ❌ delete them.
+  - Filter items by **All**, **Completed**, or **Pending**.
+
+- **Sharing**
+  - Share your shopping list items with other users by email.
+  - Shared users can see and update items in real-time.
+
+- **Real-time Updates**
+  - Powered by Firebase Firestore `onSnapshot`.
+  - Multiple users see changes instantly without refreshing.
+
+- **Responsive Design**
+  - Optimized for **mobile** and **desktop**.
+  - Clean and modern UI with separate login/signup pages.
+
+---
+
+## 💡 Problem It Solves
+
+Keeping track of groceries is hard — especially when multiple people are involved.  
+ShopMate solves this by:
+
+- Eliminating forgotten items (always accessible list).
+- Allowing **collaboration** with family or roommates (sharing feature).
+- Keeping the list **in sync in real-time** across devices.
+- Providing an easy-to-use interface for quick add, delete, and complete actions.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend:** React (Vite), React Router, CSS
+- **Backend/Database:** Firebase (Firestore, Authentication)
+
+
+## ✅ Future Improvements
+
+- Offline support with Firestore persistence.
+- Push notifications when someone updates a shared list.
+- Deploy to Firebase Hosting / Netlify.
