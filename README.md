@@ -47,7 +47,6 @@ ShopMate solves this by:
 - **Frontend:** React (Vite), React Router, CSS
 - **Backend/Database:** Firebase (Firestore, Authentication)
 
-
 ## ✅ Future Improvements
 
 - Offline support with Firestore persistence.
