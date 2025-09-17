@@ -4,6 +4,7 @@
   padding: 20px;
   background: #fffaf0;
   border-radius: 12px;
+  box-sizing: border-box;
 }
 
 .shopping-list-container h2 {
@@ -14,14 +15,17 @@
   color: #333;
 }
 
+/* filter tabs */
 .filter-tabs {
   display: flex;
   gap: 15px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
 .filter-tabs button {
-  padding: 10px 20px;
+  flex: 1;
+  padding: 10px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -35,15 +39,12 @@
   color: #fff;
 }
 
-.filter-tabs button:hover {
-  background: #1976d2;
-  color: #fff;
-}
-
+/* add item form */
 .add-form {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
 .add-form input {
@@ -51,6 +52,7 @@
   padding: 10px;
   border-radius: 6px;
   border: 1px solid #ccc;
+  font-size: 12px; 
 }
 
 .add-form button {
@@ -61,12 +63,13 @@
   color: #fff;
   cursor: pointer;
 }
+
 .completed {
   text-decoration: line-through;
   color: gray;
 }
 
-
+/* list */
 .shopping-list {
   list-style: none;
   padding: 0;
@@ -74,10 +77,10 @@
 }
 
 .shopping-list li {
-  display: flex;                  /* align items horizontally */
-  justify-content: space-between; /* name on left, buttons on right */
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  padding: 12px;
   margin-bottom: 10px;
   background: #fff;
   border-radius: 8px;
@@ -91,7 +94,7 @@
 
 .actions {
   display: flex;
-gap: 10px;              /* space between ✔ and ❌ */
+  gap: 10px;
 }
 
 .actions button {
@@ -104,6 +107,8 @@ gap: 10px;              /* space between ✔ and ❌ */
 .actions button:hover {
   transform: scale(1.1);
 }
+
+/* 📱 responsive */
 @media (max-width: 768px) {
   .shopping-list-container {
     max-width: 100%;
@@ -117,7 +122,6 @@ gap: 10px;              /* space between ✔ and ❌ */
 
   .filter-tabs {
     flex-direction: column;
-    gap: 10px;
   }
 
   .add-form {
@@ -128,4 +132,22 @@ gap: 10px;              /* space between ✔ and ❌ */
   .add-form button {
     width: 100%;
   }
+
+  .shopping-list li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .actions {
+    margin-top: 10px;
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+/* stop zoom in iOS */
+input,
+textarea,
+select {
+  font-size: 12px !important;
 }

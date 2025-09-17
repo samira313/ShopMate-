@@ -24,8 +24,8 @@ function Navbar() {
       </div>
 
       <ul className="navbar-links">
-        <li><Link to="/">Home</Link></li>
-           <li><Link to="/shopping-list">Shopping</Link></li>
+        <li><Link to="/home">Home</Link></li>
+        <li><Link to="/shopping-list">Shopping</Link></li>
         <li><Link to="/profile">Profile</Link></li>
         <li>
           <button className="logout-btn" onClick={handleLogOut}>Logout</button>
