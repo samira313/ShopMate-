@@ -11,7 +11,7 @@ export default function HomePage() {
   // If the user is logged in → redirect to shopping list
   useEffect(() => {
     if (currentUser) {
-      navigate("/shopping-list");
+      navigate("/home");
     }
   }, [currentUser, navigate]);
 
