@@ -9,7 +9,7 @@ import {
 
 import { auth } from "../firebase-config";
 
-// ✅ Init persistence (call this once in main.jsx)
+// ✅ Init persistence (i called this once in main.jsx)
 export const initAuthPersistence = async () => {
   try {
     await setPersistence(auth, browserLocalPersistence);

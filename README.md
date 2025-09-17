@@ -47,9 +47,12 @@ ShopMate solves this by:
 - **Frontend:** React (Vite), React Router, CSS
 - **Backend/Database:** Firebase (Firestore, Authentication)
 
-
 ## ✅ Future Improvements
 
 - Offline support with Firestore persistence.
 - Push notifications when someone updates a shared list.
-- Deploy to Firebase Hosting / Netlify.
+
+---
+## 🔗 Live Demo
+👉 [Click here to try it on Vercel](https://shopmate-samira.vercel.app)
+---
