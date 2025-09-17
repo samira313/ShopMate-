@@ -53,10 +53,7 @@ ShopMate solves this by:
 - Offline support with Firestore persistence.
 - Push notifications when someone updates a shared list.
 
-
 ---
-
 ## 🔗 Live Demo
 👉 [Click here to try it on Vercel](https://shopmate-samira.vercel.app)
-
 ---
