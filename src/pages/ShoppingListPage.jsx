@@ -3,7 +3,7 @@ import {
   addItem,
   updateItem,
   deleteItem,
-  handleShare,
+  handleShareList,
   subscribeToItems,
 } from "../services/listService";
 import { useAuth } from "../hooks/UseAuth"; // Custom hook for auth
@@ -60,10 +60,10 @@ function ShoppingListPage() {
   };
 
   // --- Share ---
-  const handleShareClick = async (itemId, email) => {
+  const handleShareClick = async (email) => {
     if (!email.trim()) return;
 
-    const result = await handleShare(itemId, email);
+    const result = await handleShareList(currentUser.uid, email);
     if (result.success) {
       toast.success(result.message);
       setShareEmail("");
@@ -104,12 +104,25 @@ function ShoppingListPage() {
       </form>
 
       {/* Share input */}
+      <form
+       className="share-form"
+       onSubmit={(e) => {
+        e.preventDefault();
+        handleShareClick(shareEmail);
+       }}
+       >
       <input
         type="email"
         placeholder="Enter email to share with"
         value={shareEmail}
         onChange={(e) => setShareEmail(e.target.value)}
       />
+      <button 
+                  type="submit"
+                >
+                  Share
+                </button>
+                </form>
 
       {/* Items list */}
       {filteredItems.length === 0 ? (
@@ -124,11 +137,7 @@ function ShoppingListPage() {
                   ✔
                 </button>
                 <button onClick={() => handleDeleteClick(item.id)}>❌</button>
-                <button
-                  onClick={() => handleShareClick(item.id, shareEmail)}
-                >
-                  Share
-                </button>
+          
               </div>
             </li>
           ))}
