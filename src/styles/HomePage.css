@@ -13,7 +13,7 @@
 
 .home-header {
   text-align: center;
-  padding: 3rem 1rem;
+  padding: 3rem 1rem 1rem;
 }
 
 .home-header h1 {
@@ -55,7 +55,11 @@
 }
 
 .btn-login {
+
   background: #315985;
+
+  background: #547ca7;
+
   color: #fff;
   padding: 10px 20px;
   border-radius: 6px;
@@ -64,7 +68,11 @@
 }
 
 .btn-signup {
-  background: #145c24;
+
+  
+
+  background: #3e6e49;
+
   color: #fff;
   padding: 10px 20px;
   border-radius: 6px;
