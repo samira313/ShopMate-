@@ -1,9 +1,10 @@
 import {
   doc,
-  getDoc,
+  getDocs,
   updateDoc,
   deleteDoc,
   collection,
+  query,
   addDoc,
   onSnapshot,
 } from "firebase/firestore";
@@ -15,10 +16,11 @@ import { db } from "../firebase-config";
 export const addItem = async (userId, name) => {
   try {
     const newItem = {
-      name,
+      name: name || "shopping list",
       completed: false,
-      userId,
+      userId: userId,
       sharedWith: [], // keep emails of users with access
+      items: [],
       createdAt: Date.now(),
     };
 
@@ -55,29 +57,29 @@ export const deleteItem = async (id) => {
 /**
  * Share an item with another email
  */
-export const handleShare = async (itemId, email) => {
+export const handleShareList = async (userId, email) => {
   try {
-    const itemRef = doc(db, "shoppingLists", itemId);
-    const snapshot = await getDoc(itemRef);
+    const q = query(collection(db, "shoppingLists"), `where("userId", "==", userId)`);
+    const querySnapshot = await getDocs(q);
 
-    if (snapshot.exists()) {
-      const item = snapshot.data();
-      let sharedWith = item.sharedWith || [];
-
-      if (sharedWith.includes(email)) {
-        return { success: false, message: `${email} already has access` };
-      }
-
-      await updateDoc(itemRef, {
-        sharedWith: [...sharedWith, email],
-      });
-
-      return { success: true, message: `Shared with ${email}` };
-    } else {
-      return { success: false, message: "Item not found" };
+    if (querySnapshot.empty) {
+      return { success: false, message: "No items found for this user" };
     }
+
+    querySnapshot.forEach(async (docSnap) => {
+      const data = docSnap.data();
+      const sharedWith = data.sharedWith || [];
+
+      if (!sharedWith.includes(email)) {
+        await updateDoc(docSnap.ref, {
+          sharedWith: [...sharedWith, email],
+        });
+      }
+    });
+
+    return { success: true, message: `List shared with ${email}` };
   } catch (error) {
-    console.error("Error sharing item:", error);
+    console.error("Error sharing list:", error);
     return { success: false, message: "Error while sharing" };
   }
 };
